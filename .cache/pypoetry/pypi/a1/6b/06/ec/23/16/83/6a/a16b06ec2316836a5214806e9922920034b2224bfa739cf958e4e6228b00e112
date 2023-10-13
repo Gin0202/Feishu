@@ -1,0 +1,1 @@
+9999999999{"name": "django-quill-editor", "version": "0.1.40", "summary": "Integrate Quill editor with Django project.", "platform": "", "requires_dist": ["django (>=3.0)"], "requires_python": ">3.6", "files": [], "_cache_version": "1.0.0"}

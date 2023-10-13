@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Dropdown</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="custom-dropdown-container">
+        <label for="customDropdown">选择需要的时间戳（数字）列：</label>
+        <div id="customDropdown" class="dropdown">
+            <div class="selected-options"></div>
+            <div class="arrow">&#x25bd;</div>
+            <div class="options" style="display:none;">
+                {% for option in options %}
+                    <div class="option" data-value="{{ option }}">{{ option }}</div>
+                {% endfor %}
+            </div>
+        </div>
+        <button id="confirmButton">确认</button>
+    </div>
+<div id="progressStatus"></div>
+
+<script>
+document.getElementById('confirmButton').addEventListener('click', function() {
+    const selectedValue = document.querySelector('.selected-option') ? document.querySelector('.selected-option').dataset.value : null;
+
+    if (!selectedValue) {
+        alert("Please select an option first");
+        return;
+    }
+
+    document.getElementById('progressStatus').innerText = 'Running...';
+
+    fetch(`/confirm_logic?selected_value=${selectedValue}`)
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById('progressStatus').innerText = data;
+    })
+    .catch(error => {
+        console.error('There was an error!', error);
+    });
+});
+</script>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+
+</body>
+</html>
