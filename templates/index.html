@@ -20,30 +20,8 @@
         </div>
         <button id="confirmButton">确认</button>
     </div>
-<div id="progressStatus"></div>
-
-<script>
-document.getElementById('confirmButton').addEventListener('click', function() {
-    const selectedValue = document.querySelector('.selected-option') ? document.querySelector('.selected-option').dataset.value : null;
-
-    if (!selectedValue) {
-        alert("Please select an option first");
-        return;
-    }
-
-    document.getElementById('progressStatus').innerText = 'Running...';
-
-    fetch(`/confirm_logic?selected_value=${selectedValue}`)
-    .then(response => response.text())
-    .then(data => {
-        document.getElementById('progressStatus').innerText = data;
-    })
-    .catch(error => {
-        console.error('There was an error!', error);
-    });
-});
-</script>
+    <div id="progressStatus"></div>
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
-
 </body>
+
 </html>

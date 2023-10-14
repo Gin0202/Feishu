@@ -1,15 +1,7 @@
 # update_datetime
 
-import os
-import csv
-
 from lark_oapi.api.bitable.v1 import *
 from baseopensdk import BaseClient
-
-
-APP_TOKEN = os.environ['APP_TOKEN']
-PERSONAL_BASE_TOKEN = os.environ['PERSONAL_BASE_TOKEN']
-TABLE_ID = os.environ['TABLE_ID']
 
 
 def convert_to_milliseconds(value):
@@ -22,7 +14,7 @@ def convert_to_milliseconds(value):
         return "Error: Invalid timestamp format"
 
 
-def update_a_record(record_id, column_name, value):
+def update_a_record(record_id, column_name, value, app_token, personal_base_token, table_id):
     converted_value = convert_to_milliseconds(value)
 
     if "Error" in converted_value:
@@ -31,15 +23,15 @@ def update_a_record(record_id, column_name, value):
     value = int(converted_value)
 
     client: BaseClient = BaseClient.builder() \
-        .app_token(APP_TOKEN) \
-        .personal_base_token(PERSONAL_BASE_TOKEN) \
+        .app_token(app_token) \
+        .personal_base_token(personal_base_token) \
         .build()
 
     fields_data = {column_name: value}
 
     request: UpdateAppTableRecordRequest = UpdateAppTableRecordRequest.builder() \
-        .app_token(APP_TOKEN) \
-        .table_id(TABLE_ID) \
+        .app_token(app_token) \
+        .table_id(table_id) \
         .record_id(record_id) \
         .request_body(AppTableRecord.builder()
                       .fields(fields_data)
@@ -54,17 +46,13 @@ def update_a_record(record_id, column_name, value):
     return "update successful"
 
 
-def update_all_record(selected_column_name, new_column_name):
-    with open('output.csv', 'r') as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            try:
-                timestamp_value = row[selected_column_name]
-
-                if not timestamp_value or not timestamp_value.isdigit():
-                    continue
-
-                update_a_record(row['record_id'], new_column_name, timestamp_value)
-
-            except Exception:
+def update_all_record(selected_column_name, new_column_name, app_token, personal_base_token, table_id, dataframe):
+    for index, row in dataframe.iterrows():
+        try:
+            timestamp_value = row[selected_column_name]
+            if not timestamp_value or not str(timestamp_value).isdigit():
                 continue
+            update_a_record(row['record_id'], new_column_name, timestamp_value, app_token, personal_base_token, table_id)
+        except Exception:
+            continue
+    return "update completed!"

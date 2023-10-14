@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Tokens and Custom Dropdown</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        margin-left: 20px;
+        padding-top: 120px;
+        display: flex;
+        height: 100vh;
+        justify-content: center;
+        align-items: center;
+        transform: scale(0.9);
+    }
+
+    form {
+        background-color: #ffffff;
+        padding: 50px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        max-width: 500px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px; /* Adjusted for better spacing */
+    }
+
+    input, button {
+        box-sizing: border-box; /* Ensure padding doesn't affect the final width */
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    button {
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        cursor: pointer;
+        padding: 10px 0; /* Adjusted padding for the button */
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+    </style>
+</head>
+<body>
+    <div id="loading" style="display:none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; background-color: rgba(255, 255, 255, 0.8); padding: 10px; border-radius: 8px;">加载中，请等待...</div>
+
+    <!-- First form for entering tokens and table id -->
+    <div id="tokenSetting">
+      <form action="/" method="post">
+          <label for="appToken">APP_TOKEN:</label>
+          <input type="text" name="appToken" required value="{{ app_token }}">
+          <label for="personalBaseToken">PERSONAL_BASE_TOKEN:</label>
+          <input type="text" name="personalBaseToken" required value="{{ personal_base_token }}">
+          <label for="tableId">TABLE_ID:</label>
+          <input type="text" name="tableId" required value="{{ table_id }}">
+          <button type="submit" id="tokenSubmitButton">Submit</button>
+      </form>
+
+        <form id="dropdownSetting" action="/confirm_logic" method="post" style="margin-top: 20px;">
+            <input type="hidden" name="appToken" value="{{ app_token }}">
+            <input type="hidden" name="personalBaseToken" value="{{ personal_base_token }}">
+            <input type="hidden" name="tableId" value="{{ table_id }}">
+        <div class="custom-dropdown-container">
+            <label for="customDropdown">选择需要的时间戳（数字）列：</label>
+            <div id="customDropdown" class="dropdown">
+                <div class="selected-options"></div>
+                <div class="arrow">&#x25bd;</div>
+                <div class="options" style="display:none;">
+                    {% for option in options %}
+                        <div class="option" data-value="{{ option }}">{{ option }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div id="error-message" style="color: red; margin-top: 10px;"></div>
+        <button type="submit">确认选择</button>
+    </form>
+</div>
+
+    <div id="progressStatus"></div>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>
+

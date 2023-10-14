@@ -1,32 +1,22 @@
 # get_record_data.py
 
-import os
-import csv
 import json
 import lark_oapi as lark
-
 from lark_oapi.api.bitable.v1 import *
 from baseopensdk import BaseClient
-from record_data.create_a_column import create_a_column
+import pandas as pd
 
 
-APP_TOKEN = os.environ['APP_TOKEN']
-PERSONAL_BASE_TOKEN = os.environ['PERSONAL_BASE_TOKEN']
-TABLE_ID = os.environ['TABLE_ID']
-
-
-def get_record_data():
+def get_record_data(app_token, personal_base_token, table_id):
     client: BaseClient = BaseClient.builder() \
-        .app_token(APP_TOKEN) \
-        .personal_base_token(PERSONAL_BASE_TOKEN) \
+        .app_token(app_token) \
+        .personal_base_token(personal_base_token) \
         .build()
 
     request: ListAppTableRecordRequest = ListAppTableRecordRequest.builder() \
-        .app_token(APP_TOKEN) \
-        .table_id(TABLE_ID) \
+        .app_token(app_token) \
+        .table_id(table_id) \
         .build()
-
-    create_a_column()
 
     response: ListAppTableRecordResponse = client.base.v1.app_table_record.list(request)
 
@@ -38,32 +28,28 @@ def get_record_data():
     return data_dict
 
 
-def save_to_csv(data):
+def save_to_dataframe(data):
     if isinstance(data, str) and data.startswith("Error"):
         return data
 
     items = data['items']
 
-    field_names = set()
+    # 创建一个空的 DataFrame
+    df = pd.DataFrame()
+
     for item in items:
-        field_names.update(item['fields'].keys())
-    field_names = list(field_names)
-    with open('output.csv', 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile)
+        record_id = item['record_id']
+        fields = item['fields']
+        # 将每个项目的数据添加到 DataFrame 中
+        row_data = {'record_id': record_id, **fields}
+        df = pd.concat([df, pd.DataFrame([row_data])], ignore_index=True)
 
-        writer.writerow(['record_id'] + field_names)
-
-        for item in items:
-            row_data = [item['record_id']]
-            for field in field_names:
-                row_data.append(item['fields'].get(field, ""))
-            writer.writerow(row_data)
+    return df  # 返回 DataFrame 对象而不是写入文件
 
 
-def save_record_to_csv():
-    record_data = get_record_data()
+def save_record_to_dataframe(app_token, personal_base_token, table_id):
+    record_data = get_record_data(app_token, personal_base_token, table_id)
     if isinstance(record_data, str) and record_data.startswith("Error"):
         return record_data
-    save_to_csv(record_data)
-    result = save_to_csv(record_data)
-    return result
+    df = save_to_dataframe(record_data)
+    return df  # 返回 DataFrame 对象
