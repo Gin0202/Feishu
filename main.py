@@ -9,10 +9,8 @@ from record_data.update_datetime import update_all_record
 
 app = Flask(__name__)
 
-app.secret_key = 'my_secret_key'
+app.secret_key = os.environ['SECRET_KEY']
 
-
-# app.secret_key = os.environ['SECRET_KEY']
 
 @app.route('/', methods=['GET', 'POST'])
 def set_tokens():
