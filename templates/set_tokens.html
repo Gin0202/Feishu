@@ -30,11 +30,11 @@
 
     label {
         display: block;
-        margin-bottom: 8px; /* Adjusted for better spacing */
+        margin-bottom: 8px;
     }
 
     input, button {
-        box-sizing: border-box; /* Ensure padding doesn't affect the final width */
+        box-sizing: border-box;
         width: 100%;
         padding: 10px;
         margin-bottom: 20px;
@@ -48,7 +48,7 @@
         color: #ffffff;
         border: none;
         cursor: pointer;
-        padding: 10px 0; /* Adjusted padding for the button */
+        padding: 10px 0;
     }
 
     button:hover {
@@ -57,24 +57,24 @@
     </style>
 </head>
 <body>
-    <div id="loading" style="display:none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; background-color: rgba(255, 255, 255, 0.8); padding: 10px; border-radius: 8px;">加载中，请等待...</div>
+    <div id="loading" style="display:none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; background-color: rgba(255, 255, 255, 0.8); padding: 10px; border-radius: 8px;">Loading，Pleae Wait...</div>
 
     <!-- First form for entering tokens and table id -->
     <div id="tokenSetting">
       <form action="/" method="post">
           <label for="appToken">APP_TOKEN:</label>
-          <input type="text" name="appToken" required value="{{ app_token }}">
+          <input type="text" name="appToken" required value="{{ app_token }}" autocomplete="off">
           <label for="personalBaseToken">PERSONAL_BASE_TOKEN:</label>
-          <input type="text" name="personalBaseToken" required value="{{ personal_base_token }}">
+          <input type="text" name="personalBaseToken" required value="{{ personal_base_token }}" autocomplete="off">
           <label for="tableId">TABLE_ID:</label>
-          <input type="text" name="tableId" required value="{{ table_id }}">
+          <input type="text" name="tableId" required value="{{ table_id }}" autocomplete="off">
           <button type="submit" id="tokenSubmitButton">Submit</button>
       </form>
 
-        <form id="dropdownSetting" action="/confirm_logic" method="post" style="margin-top: 20px;">
-            <input type="hidden" name="appToken" value="{{ app_token }}">
-            <input type="hidden" name="personalBaseToken" value="{{ personal_base_token }}">
-            <input type="hidden" name="tableId" value="{{ table_id }}">
+      <form id="dropdownSetting" action="/confirm_logic" method="post" style="margin-top: 20px;">
+        <input type="hidden" name="appToken" value="{{ app_token }}">
+        <input type="hidden" name="personalBaseToken" value="{{ personal_base_token }}">
+        <input type="hidden" name="tableId" value="{{ table_id }}">
         <div class="custom-dropdown-container">
             <label for="customDropdown">选择需要的时间戳（数字）列：</label>
             <div id="customDropdown" class="dropdown">
@@ -88,7 +88,7 @@
             </div>
         </div>
         <div id="error-message" style="color: red; margin-top: 10px;"></div>
-        <button type="submit">确认选择</button>
+        <button type="submit">Submit Timestamp Column</button>
     </form>
 </div>
 

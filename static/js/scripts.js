@@ -3,12 +3,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const dropdownSettingForm = document.querySelector('#dropdownSetting');
     const customDropdownContainer = document.querySelector('.custom-dropdown-container');
     const loadingDiv = document.getElementById('loading');
+    const errorMessageDiv = document.getElementById('error-message'); // 新增此行
     const submitButton = document.getElementById('tokenSubmitButton');
     const progressStatus = document.getElementById('progressStatus');
 
     let appToken = null;
     let personalBaseToken = null;
     let tableId = null;
+
+    function displayError(message) { // 新增此函数
+        errorMessageDiv.innerText = message;
+    }
 
     // First form's submit listener
     tokenSettingForm.addEventListener('submit', function(e) {
@@ -29,10 +34,10 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
-            loadingDiv.innerText = '加载完成';  // 修改此处
-        setTimeout(() => {  // 添加此段代码
-            loadingDiv.style.display = 'none';
-        }, 3000);
+            loadingDiv.innerText = '加载完成';
+            setTimeout(() => {
+                loadingDiv.style.display = 'none';
+            }, 3000);
             submitButton.disabled = false;
 
             if (data.success) {
@@ -53,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     customDropdownContainer.style.display = 'block';
                 }
             } else {
-                alert(data.message || 'Error occurred.');
+                displayError(data.message || 'Error occurred.'); // 使用新函数代替alert
             }
         })
         .catch(error => {
@@ -70,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectedValue = document.querySelector('.selected-option') ? document.querySelector('.selected-option').dataset.value : null;
 
         if (!selectedValue) {
-            alert('请从下拉菜单中选择一个选项。');
+            displayError('请从下拉菜单中选择一个选项。'); // 使用新函数代替alert
             return;
         }
 
@@ -95,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
             loadingDiv.innerText = '转换完成';
             setTimeout(() => {
                 loadingDiv.style.display = 'none';
-            }, 3000);  // 3秒后隐藏消息
+            }, 3000);
         })
         .catch(error => {
             loadingDiv.style.display = 'none';

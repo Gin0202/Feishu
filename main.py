@@ -1,7 +1,7 @@
 import json
 import os
 
-from flask import Flask, render_template, request, session, redirect, jsonify
+from flask import Flask, render_template, request, session, jsonify
 from record_data.get_record_data import save_record_to_dataframe
 from record_data.list_field import list_field
 from record_data.create_a_column import create_a_column
@@ -48,25 +48,6 @@ def set_tokens():
                            app_token=app_token,
                            personal_base_token=personal_base_token,
                            table_id=table_id)
-
-
-@app.route('/set_column_name', methods=['GET', 'POST'])
-def set_column_name():
-    if request.method == 'POST':
-        app_token = request.form.get('appToken')
-        personal_base_token = request.form.get('personalBaseToken')
-        table_id = request.form.get('tableId')
-
-        session['APP_TOKEN'] = app_token
-        session['PERSONAL_BASE_TOKEN'] = personal_base_token
-        session['TABLE_ID'] = table_id
-
-        field_list_json = list_field(app_token, personal_base_token, table_id)
-        field_list = json.loads(field_list_json)['items']
-        type_2_names = [item['field_name'] for item in field_list if item['type'] == 2]
-        return render_template('index.html', options=type_2_names)
-
-    return render_template('set_tokens.html')
 
 
 @app.route('/confirm_logic', methods=['POST'])
